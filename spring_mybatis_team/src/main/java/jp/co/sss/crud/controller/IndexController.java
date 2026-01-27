@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.crud.form.LoginForm;
+import jp.co.sss.crud.service.LoginResult;
 import jp.co.sss.crud.service.LoginService;
 
 @Controller
@@ -48,24 +49,29 @@ public class IndexController {
 	public String login(@Valid @ModelAttribute LoginForm loginForm, BindingResult result, HttpSession session,
 			Model model) {
 
-		//TODO 入力エラーがある場合、result.hasErrorsメソッドを呼びだしindex.htmlへ戻る
-		if (false) {
+		// 入力エラーがある場合、result.hasErrorsメソッドを呼びだしindex.htmlへ戻る
+		if (result.hasErrors()) {
+			return "index";
 		}
 
-		//TODO loginServiceのメソッドを呼びだし、LoginResult型のオブジェクトへ代入する
+		// loginServiceのメソッドを呼びだし、LoginResult型のオブジェクトへ代入する
+		LoginResult loginResult = loginService.execute(loginForm);
 
-		//TODO loginResult.isLoginの結果がtrueの場合、ログイン成功でセッションに"user"という名前でセッションにユーザーの情報を登録する
-		if (true) {
+		// loginResult.isLoginの結果がtrueの場合、ログイン成功でセッションに"user"という名前でセッションにユーザーの情報を登録する
+		if (loginResult.isLogin()) {
 
-			//TODO セッションにuser登録
+			// セッションにuser登録
+			session.setAttribute("user", loginResult.getLoginUser());
 
 			// 一覧へリダイレクト
 			return "redirect:/list";
-			//TODO loginResult.isLoginの結果がfalseの場合、loginResult.getErrorMsgメソッドを呼びだし、modelスコープに登録する
+
+			// loginResult.isLoginの結果がfalseの場合、loginResult.getErrorMsgメソッドを呼びだし、modelスコープに登録する
 		} else {//ログイン失敗時
 
-			//TODO loginResult.getErrorMsgを呼び出し、メッセージをmodelスコープに登録
-
+			// loginResult.getErrorMsgを呼び出し、メッセージをmodelスコープに登録
+			String errMessage = loginResult.getErrorMsg();
+			model.addAttribute("errMessage", errMessage);
 			return "index";
 		}
 
@@ -73,7 +79,9 @@ public class IndexController {
 
 	@RequestMapping(path = "/logout", method = RequestMethod.GET)
 	public String logout() {
-		//TODO セッションの破棄
+
+		// セッションの破棄
+		session.invalidate();
 
 		//index.htmlへ遷移
 		return "redirect:/";
