@@ -82,9 +82,23 @@
 	</insert>
 
 	<!-- TODO IDによる単一変更 -->
+<<<<<<< HEAD
 	<update id="update"
 		parameterType="jp.co.sss.crud.entity.Employee">
 
+=======
+	<update id="update"	parameterType="jp.co.sss.crud.entity.Employee">
+		UPDATE employee
+		SET emp_pass = #{empPass},
+			emp_name = #{empName},
+			gender = #{gender},
+			address = #{address},
+			birthday = #{birthday},
+			authority = #{authority},
+			dept_id = #{deptId}
+		WHERE
+			emp_id = #{empId}
+>>>>>>> refs/heads/user-ooyama2
 	</update>
 
 	<!-- TODO IDによる単一削除 -->
