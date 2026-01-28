@@ -50,6 +50,11 @@
 	<!-- TODO 部署ID検索 -->
 	<select id="findByDepartmentDeptIdOrderByEmpId"
 		resultType="jp.co.sss.crud.entity.Employee">
+		SELECT *
+		FROM Employee e
+		INNER JOIN Department d ON e.dept_id = d.dept_id
+		WHERE e.dept_id = #{deptId}
+		ORDER BY e.emp_id ASC
 	</select>
 
 	<!-- ログイン用のIDとパスワード検索 -->
@@ -84,7 +89,10 @@
 
 	<!-- TODO IDによる単一削除 -->
 	<delete id="delete" parameterType="int">
-
+	
+		DELETE
+		FROM employee
+		WHERE emp_id = #{empId}
 	</delete>
 
 
