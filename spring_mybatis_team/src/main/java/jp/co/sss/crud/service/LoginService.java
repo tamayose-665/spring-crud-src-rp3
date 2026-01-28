@@ -3,8 +3,11 @@ package jp.co.sss.crud.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.sss.crud.entity.Employee;
 import jp.co.sss.crud.form.LoginForm;
 import jp.co.sss.crud.mapper.EmployeeMapper;
+import jp.co.sss.crud.util.Constant;
+import jp.co.sss.crud.util.LoginErrorType;
 
 /**
  * ログイン処理
@@ -24,8 +27,19 @@ public class LoginService {
 	 * @return LoginResult ログイン失敗時はLoginResult.failLogin,ログイン成功時はLoginResult.succeedLoginを呼び出す。
 	 */
 	public LoginResult execute(LoginForm loginForm) {
-		return null;
 
+		// Formの中身を受け取る
+		Integer empId = loginForm.getEmpId();
+		String empPass = loginForm.getEmpPass();
+		// Formの中身を基に社員情報を取得
+		Employee emp = mapper.findByEmpIdAndEmpPass(empId, empPass);
+		// 該当社員は存在したか
+		if (emp != null) {
+			// ログイン成功
+			return LoginResult.succeedLogin(emp);
+		} else {
+			// ログイン失敗
+			return LoginResult.failLogin(Constant.LOGIN_ERR_MSG, LoginErrorType.USER_NOT_FOUND);
+		}
 	}
-
 }
