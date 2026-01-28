@@ -54,8 +54,19 @@ public class ListController {
 	 */
 	@RequestMapping(path = "/list/empName", method = RequestMethod.GET)
 	public String findByEmpName(String empName, Model model) {
-		//検索した社員情報をmodelに追加
-		model.addAttribute("employees", searchForEmployeesByEmpNameService.execute(empName));
+		//検索した社員情報をmodelに追加）
+		if (empName == null || empName.trim().isEmpty()) {
+			model.addAttribute("employees", searchAllEmployeesService.execute());
+			return "list/list";
+		}
+
+		var employees = searchForEmployeesByEmpNameService.execute(empName);
+
+		if (employees.isEmpty()) {
+			model.addAttribute("message", "該当する社員は存在しません。");
+		}
+
+		model.addAttribute("employees", employees);
 		return "list/list";
 	}
 
